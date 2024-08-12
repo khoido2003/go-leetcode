@@ -1,5 +1,489 @@
 package main
 
+
+///////////////////////////////////////////////////
+
+// 141. Linked List Cycle
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+func hasCycle(head *ListNode) bool {
+
+	if head == nil || head.Next == nil {
+		return false
+	}
+
+	//Floyd's Cycle Finding Algorithm
+	fast := head
+	slow := head
+
+	for fast != nil && fast.Next != nil {
+		fast = fast.Next.Next
+		slow = slow.Next
+
+		if slow == fast {
+			return true
+		}
+	}
+
+	return false
+}
+
+func arrToLinkList(array []int, pos int) *ListNode {
+
+	if pos < 0 {
+		return nil
+	}
+
+	head := &ListNode{Val: array[0]}
+
+	current := head
+
+	var lastNode *ListNode
+
+	for i := 1; i < len(array); i++ {
+		current.Next = &ListNode{Val: array[i]}
+		current = current.Next
+
+		if i == len(array)-1 {
+			lastNode = current
+		}
+	}
+
+	k := pos
+	current = head
+
+	for k > 0 {
+		current = current.Next
+		k--
+	}
+
+	lastNode.Next = current
+
+	return head
+}
+
+func printLinkdList(head *ListNode, loopCnt int) {
+
+	current := head
+
+	for loopCnt > 0 && current != nil {
+		fmt.Print(current.Val, " -> ")
+		current = current.Next
+		loopCnt--
+	}
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp1, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	inp2, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	inp1 = strings.TrimSpace(inp1)
+	inp2 = strings.TrimSpace(inp2)
+
+	arr := strings.Split(inp1, " ")
+	pos, err := strconv.Atoi(inp2)
+
+	if err != nil {
+		fmt.Println("Error converting string to integer:", err)
+		return
+	}
+
+	var arrNum []int
+
+	for _, v := range arr {
+
+		num, err := strconv.Atoi(v)
+
+		if err != nil {
+			fmt.Println("Error converting string to integer:", err)
+			break
+		}
+
+		arrNum = append(arrNum, num)
+	}
+	loopCnt := len(arrNum)
+	head := arrToLinkList(arrNum, pos)
+
+	printLinkdList(head, loopCnt+1)
+
+	r := hasCycle(head)
+
+	fmt.Println(r)
+}
+
+////////////////////////////////////////////////////////
+
+// 136. Single Number
+
+func singleNumber(nums []int) int {
+	result := 0
+
+	for _, num := range nums {
+		result ^= num
+	}
+	return result
+}
+
+func main() {
+
+}
+
+//////////////////////////////////////////////////////////////
+
+// 125. Valid Palindrome
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+)
+
+func isPalindrome(s string) bool {
+
+	s = strings.TrimSpace(s)
+
+	realStr := ""
+
+	for k := 0; k < len(s); k++ {
+		if s[k] >= 'a' && s[k] <= 'z' {
+			realStr += string(s[k])
+		}
+		if s[k] >= 'A' && s[k] <= 'Z' {
+			realStr += strings.ToLower(string(s[k]))
+		}
+		if s[k] >= '0' && s[k] <= '9' {
+			realStr += string(s[k])
+		}
+	}
+
+	fmt.Println(realStr)
+
+	i := 0
+	j := len(realStr) - 1
+
+	for i < j {
+		if realStr[i] != realStr[j] {
+			return false
+		}
+		i++
+		j--
+	}
+
+	return true
+}
+
+func main() {
+
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+
+	}
+
+	r := isPalindrome(inp)
+	fmt.Println(r)
+
+}
+
+////////////////////////////////////////////////////////////////////////
+
+121. Best Time to Buy and Sell Stock
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func maxProfit(prices []int) int {
+	minPrice := prices[0]
+
+	profit := 0
+
+	for i := 0; i < len(prices); i++ {
+		if prices[i] < minPrice {
+			minPrice = prices[i]
+			continue
+		}
+
+		curProfit := prices[i] - minPrice
+
+		profit = max(curProfit, profit)
+
+	}
+
+	return profit
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+
+	arr := strings.Split(inp, " ")
+
+	var arrNum []int
+
+	for i := 0; i < len(arr); i++ {
+		num, err := strconv.Atoi(arr[i])
+
+		if err != nil {
+			fmt.Println("Invalid input:", arr[i])
+			break
+		}
+
+		arrNum = append(arrNum, num)
+	}
+
+	r := maxProfit(arrNum)
+	fmt.Println(r)
+
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+ // Pascal's Triangle 2
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func getRow(rowIndex int) []int {
+	if rowIndex == 0 {
+		return []int{1}
+	}
+
+	array := make([][]int, rowIndex+1)
+
+	array[0] = []int{1}
+
+	for i := 1; i <= rowIndex; i++ {
+		currentRow := make([]int, i+1)
+		currentRow[0], currentRow[i] = 1, 1
+
+		for j := 1; j < i; j++ {
+			currentRow[j] = array[i-1][j-1] + array[i-1][j]
+		}
+
+		array[i] = currentRow
+	}
+
+	return array[rowIndex]
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+
+	rowIndex, err := strconv.Atoi(inp)
+
+	if err != nil {
+		fmt.Println("Error converting input to integer:", err)
+		return
+	}
+
+	r := getRow(rowIndex)
+
+	fmt.Println(r)
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+// Pascal's Triangle
+
+func generate(numRows int) [][]int {
+	if numRows == 0 {
+		return [][]int{}
+	}
+
+	result := [][]int{{1}}
+
+	for i := 1; i < numRows; i++ {
+		currentRow := []int{1}
+
+		for j := 1; j < i; j++ {
+			currentRow = append(currentRow, result[i-1][j-1]+result[i-1][j])
+		}
+
+		currentRow = append(currentRow, 1)
+		result = append(result, currentRow)
+	}
+
+	return result
+}
+
+func main() {
+
+}
+
+////////////////////////////////////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+func hasPathSum(root *TreeNode, targetSum int) bool {
+	if root == nil {
+		return false
+	}
+
+	targetSum = targetSum - root.Val
+
+	if root.Left == nil && root.Right == nil {
+		return targetSum == 0
+	}
+
+	return hasPathSum(root.Left, targetSum) || hasPathSum(root.Right, targetSum)
+}
+
+func arrayToBT(arr []interface{}) *TreeNode {
+	if len(arr) == 0 {
+		return nil
+	}
+
+	nodes := make([]*TreeNode, len(arr))
+
+	for i := 0; i < len(arr); i++ {
+		if arr[i] != nil {
+			nodes[i] = &TreeNode{Val: arr[i].(int)}
+		}
+	}
+
+	var j = 0
+	for i := 0; i < len(arr); i++ {
+		left := 2*j + 1
+		right := 2*j + 2
+
+		if left < len(arr) && nodes[left] != nil {
+			nodes[i].Left = nodes[left]
+		}
+
+		if right < len(arr) && nodes[right] != nil {
+			nodes[i].Right = nodes[right]
+		}
+
+		j++
+
+	}
+
+	return nodes[0]
+
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Print("Error reading input: ", err)
+		return
+	}
+
+	inp2, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Print("Error reading input: ", err)
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+	inp2 = strings.TrimSpace(inp2)
+
+	target, err := strconv.Atoi(inp2)
+
+	if err != nil {
+		return
+	}
+
+	arr := strings.Split(inp, " ")
+
+	var arrNum []interface{}
+
+	for _, val := range arr {
+		if val == "null" {
+			arrNum = append(arrNum, nil)
+			continue
+		}
+		num, err := strconv.Atoi(val)
+		if err != nil {
+			fmt.Println("Invalid input:", val)
+			break
+		}
+
+		arrNum = append(arrNum, num)
+	}
+
+	root := arrayToBT(arrNum)
+
+	r := hasPathSum(root, target)
+
+	fmt.Println(r)
+
+}
+
 ////////////////////////////////////////////////////////////////
 
 import (
