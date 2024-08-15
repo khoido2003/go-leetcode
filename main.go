@@ -1,5 +1,402 @@
 package main
 
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+// 160. Intersection of Two Linked Lists
+
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+func getIntersectionNode(headA, headB *ListNode) *ListNode {
+	if headA == nil || headB == nil {
+		return nil
+	}
+
+	pA := headA
+	pB := headB
+
+	for pA != pB {
+		pA = travelLinkedList(pA, headB)
+		pB = travelLinkedList(pB, headA)
+	}
+
+	return pA
+}
+
+func travelLinkedList(head *ListNode, resethead *ListNode) *ListNode {
+	if head == nil {
+		return resethead
+	}
+
+	return head.Next
+}
+
+func arrToLinkedList(arr1 []int, arr2 []int, skip1 int, skip2 int) (*ListNode, *ListNode) {
+	head1 := &ListNode{Val: arr1[0]}
+	head2 := &ListNode{Val: arr2[0]}
+
+	current1 := head1
+	current2 := head2
+
+	for i := 1; i < skip1; i++ {
+		current1.Next = &ListNode{Val: arr1[i]}
+		current1 = current1.Next
+	}
+
+	for i := 1; i < skip2; i++ {
+		current2.Next = &ListNode{Val: arr2[i]}
+		current2 = current2.Next
+	}
+
+	for i := skip1; i < len(arr1); i++ {
+
+		curNode := &ListNode{Val: arr1[i]}
+
+		current1.Next = curNode
+		current1 = current1.Next
+
+		current2.Next = curNode
+		current2 = current2.Next
+	}
+
+	return head1, head2
+
+}
+
+func printLinkedList(head *ListNode) {
+	current := head
+	for current != nil {
+		fmt.Print(current.Val, " ")
+		current = current.Next
+	}
+}
+
+func main() {
+
+	reader := bufio.NewReader(os.Stdin)
+
+	inp1, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Print("Error reading input: ", err)
+		return
+	}
+
+	inp1 = strings.TrimSpace(inp1)
+
+	inp2, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Print("Error reading input: ", err)
+		return
+	}
+
+	inp2 = strings.TrimSpace(inp2)
+
+	arr1 := strings.Split(inp1, " ")
+	arr2 := strings.Split(inp2, " ")
+
+	inp3, _ := reader.ReadString('\n')
+	inp4, _ := reader.ReadString('\n')
+
+	inp3 = strings.TrimSpace(inp3)
+	inp4 = strings.TrimSpace(inp4)
+
+	skip1, _ := strconv.Atoi(inp3)
+	skip2, err := strconv.Atoi(inp4)
+
+	if err != nil {
+		fmt.Println("Error converting")
+		return
+	}
+
+	var arrNum1, arrNum2 []int
+	for i := 0; i < len(arr1); i++ {
+		num, err := strconv.Atoi(arr1[i])
+
+		if err != nil {
+			fmt.Println("Error converting")
+			return
+		}
+
+		arrNum1 = append(arrNum1, num)
+	}
+
+	for i := 0; i < len(arr2); i++ {
+
+		num, err := strconv.Atoi(arr2[i])
+		if err != nil {
+			fmt.Println("Error converting")
+			return
+		}
+
+		arrNum2 = append(arrNum2, num)
+	}
+
+	head1, head2 := arrToLinkedList(arrNum1, arrNum2, skip1, skip2)
+
+	printLinkedList(head1)
+	fmt.Println()
+	printLinkedList(head2)
+	fmt.Println()
+
+	result := getIntersectionNode(head1, head2)
+
+	fmt.Println(result)
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+// 145. Binary Tree Postorder Traversal
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+func postorderTraversal(root *TreeNode) []int {
+	var arrayResult []int
+
+	solve(root, &arrayResult)
+
+	return arrayResult
+
+}
+
+func solve(root *TreeNode, arr *[]int) {
+
+	if root == nil {
+		return
+	}
+
+	solve(root.Left, arr)
+	solve(root.Right, arr)
+	*arr = append(*arr, root.Val)
+}
+
+func arrToBt(arr []interface{}) *TreeNode {
+
+	if len(arr) == 0 {
+		return nil
+	}
+
+	if arr[0] == nil {
+		return nil
+	}
+
+	nodes := make([]*TreeNode, 0, len(arr))
+
+	for i := 0; i < len(arr); i++ {
+		if arr[i] == nil {
+			nodes = append(nodes, nil)
+			continue
+		}
+		node := &TreeNode{Val: arr[i].(int)}
+		nodes = append(nodes, node)
+	}
+
+	var j = 0
+	for i := 0; i < len(nodes); i++ {
+		if nodes[i] == nil {
+			continue
+		}
+
+		left := 2*j + 1
+		right := 2*j + 2
+
+		if left < len(nodes) && nodes[left] != nil {
+			nodes[i].Left = nodes[left]
+		}
+
+		if right < len(nodes) && nodes[right] != nil {
+			nodes[i].Right = nodes[right]
+		}
+
+		j++
+	}
+
+	return nodes[0]
+
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	input, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	input = strings.TrimSpace(input)
+
+	arr := strings.Split(input, " ")
+
+	arrInt := make([]interface{}, 0, len(arr))
+
+	for i := 0; i < len(arr); i++ {
+
+		if arr[i] == "null" {
+			arrInt = append(arrInt, nil)
+		} else {
+			num, err := strconv.Atoi(arr[i])
+			if err != nil {
+				fmt.Println("Error converting string to integer:", err)
+				return
+			}
+			arrInt = append(arrInt, num)
+		}
+	}
+
+	root := arrToBt(arrInt)
+	postorder := postorderTraversal(root)
+	fmt.Println(postorder)
+
+}
+
+/////////////////////////////////////////////////////////////
+
+// 144. Binary Tree Preorder Traversal
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+func preorderTraversal(root *TreeNode) []int {
+	var arrResult []int
+
+	solve(root, &arrResult)
+
+	return arrResult
+}
+
+func solve(root *TreeNode, arrResult *[]int) {
+	if root == nil {
+		return
+	}
+	*arrResult = append(*arrResult, root.Val)
+
+	solve(root.Left, arrResult)
+	solve(root.Right, arrResult)
+}
+
+func printBT(
+	root *TreeNode,
+) {
+	if root == nil {
+		return
+	}
+
+	fmt.Print(root.Val, " ")
+
+	printBT(root.Left)
+
+	printBT(root.Right)
+}
+
+func arrToBT(arr []interface{}) *TreeNode {
+
+	nodes := make([]*TreeNode, len(arr))
+
+	for i := 0; i < len(arr); i++ {
+		if arr[i] != nil {
+			nodes[i] = &TreeNode{Val: arr[i].(int)}
+		}
+	}
+
+	var j = 0
+
+	for i := 0; i < len(arr); i++ {
+
+		if nodes[i] == nil {
+			continue
+		}
+
+		leftNode := 2*j + 1
+		rightNode := 2*j + 2
+
+		if leftNode < len(arr) && nodes[leftNode] != nil {
+			nodes[i].Left = nodes[leftNode]
+		}
+
+		if rightNode < len(arr) && nodes[rightNode] != nil {
+			nodes[i].Right = nodes[rightNode]
+		}
+
+		j++
+	}
+	return nodes[0]
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp1, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	inp1 = strings.TrimSpace(inp1)
+
+	arr := strings.Split(inp1, " ")
+
+	var arrNum []interface{}
+
+	for _, v := range arr {
+
+		if v == "null" {
+			arrNum = append(arrNum, nil)
+			continue
+		}
+		num, err := strconv.Atoi(v)
+
+		if err != nil {
+			fmt.Println("Error converting string to integer:", err)
+			break
+		}
+
+		arrNum = append(arrNum, num)
+	}
+
+	root := arrToBT(arrNum)
+
+	fmt.Println(arrNum...)
+
+	printBT(root)
+	r := preorderTraversal(root)
+
+	fmt.Println(r)
+}
 
 ///////////////////////////////////////////////////
 
