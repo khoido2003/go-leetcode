@@ -8,6 +8,270 @@ import (
 	"strings"
 )
 
+// 190. Reverse Bits
+
+
+func reverseBits(num uint32) uint32 {
+	var result = uint32(0)
+
+	for i := 0; i < 32; i++ {
+		bit := (num >> uint(i)) & 1
+		result |= (uint32(bit) << (uint32(31) - uint32(i)))
+	}
+
+	return result
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+
+	num, err := strconv.ParseUint(inp, 2, 32)
+
+	if err != nil {
+		fmt.Println("Error parsing input:")
+		return
+	}
+
+	r := reverseBits(uint32(num))
+
+	fmt.Println(r)
+}
+
+////////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"math"
+	"os"
+	"strings"
+)
+
+// 171. Excel Sheet Column Number
+func titleToNumber(columnTitle string) int {
+
+	charMap := map[string]int{
+
+		"Z": 26,
+		"Y": 25,
+		"X": 24,
+		"W": 23,
+		"V": 22,
+		"U": 21,
+		"T": 20,
+		"S": 19,
+		"R": 18,
+		"Q": 17,
+		"P": 16,
+		"O": 15,
+		"N": 14,
+		"M": 13,
+		"L": 12,
+		"K": 11,
+		"J": 10,
+		"I": 9,
+		"H": 8,
+		"G": 7,
+		"F": 6,
+		"E": 5,
+		"D": 4,
+		"C": 3,
+		"B": 2,
+		"A": 1,
+	}
+
+	titleLenght := len(columnTitle) - 1
+
+	r := 0
+	for i := 0; i < len(columnTitle); i++ {
+		val := charMap[string(columnTitle[i])]
+
+		r += val * int(math.Pow(26, float64(titleLenght)))
+		titleLenght--
+	}
+
+	return r
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inputStr, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	inputStr = strings.TrimSpace(inputStr)
+
+	r := titleToNumber(inputStr)
+	fmt.Println(r)
+
+}
+
+//////////////////////////////////////////
+
+169. Majority Element
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func majorityElement(nums []int) int {
+	var hashMap = make(map[int]int)
+
+	for _, num := range nums {
+		hashMap[num]++
+	}
+
+	var majority int = len(nums) / 2
+	var r int
+
+	for k, v := range hashMap {
+		if v > majority {
+			r = k
+			break
+		}
+	}
+	return r
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error reading")
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+
+	arr := strings.Split(inp, " ")
+
+	var arrNum []int
+
+	for i := 0; i < len(arr); i++ {
+		num, err := strconv.Atoi(arr[i])
+		if err == nil {
+			arrNum = append(arrNum, num)
+		}
+
+		arrNum = append(arrNum, num)
+	}
+
+	r := majorityElement(arrNum)
+	fmt.Println(r)
+}
+
+////////////////////////////////////////////
+
+// 168. Excel Sheet Column Title
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func convertToTitle(columnNumber int) string {
+
+	charMap := map[int]string{
+		25: "Z",
+		24: "Y",
+		23: "X",
+		22: "W",
+		21: "V",
+		20: "U",
+		19: "T",
+		18: "S",
+		17: "R",
+		16: "Q",
+		15: "P",
+		14: "O",
+		13: "N",
+		12: "M",
+		11: "L",
+		10: "K",
+		9:  "J",
+		8:  "I",
+		7:  "H",
+		6:  "G",
+		5:  "F",
+		4:  "E",
+		3:  "D",
+		2:  "C",
+		1:  "B",
+		0:  "A",
+	}
+
+	var result string = ""
+
+	for columnNumber > 0 {
+
+		columnNumber--
+
+		remainder := columnNumber % 26
+
+		result = charMap[remainder] + result
+
+		columnNumber /= 26
+	}
+
+	return result
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inputStr, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	inputStr = strings.TrimSpace(inputStr)
+
+	num, err := strconv.Atoi(inputStr)
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	r := convertToTitle(num)
+
+	fmt.Println(r)
+}
+
+///////////////////////////////////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
 // 160. Intersection of Two Linked Lists
 
 type ListNode struct {
