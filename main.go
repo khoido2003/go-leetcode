@@ -1,5 +1,419 @@
 package main
 
+//217. Contains Duplicate
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func containsDuplicate(nums []int) bool {
+
+	hashMap := make(map[int]int)
+
+	for _, num := range nums {
+		if _, exists := hashMap[num]; exists {
+			return true
+		}
+		hashMap[num]++
+	}
+
+	return false
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+	arr := strings.Split(inp, " ")
+
+	var arrNum []int
+
+	for i := 0; i < len(arr); i++ {
+		num, err := strconv.Atoi(arr[i])
+
+		if err != nil {
+			fmt.Println("error converting")
+			return
+		}
+		arrNum = append(arrNum, num)
+	}
+
+	r := containsDuplicate(arrNum)
+
+	fmt.Println(r)
+
+}
+
+//////////////////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+// 206. Reverse Linked List
+
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+func reverseList(head *ListNode) *ListNode {
+	var prev *ListNode
+	var next *ListNode
+	current := head
+
+	for current != nil {
+
+		// Store the chain of nodes from the current node
+		next = current.Next
+
+		// Reverse the link of the current node by changing the next pointer to point to the previous node
+		current.Next = prev
+
+		// Move the current node one step forward in the original list and one step backward in the reversed list
+		prev = current
+		current = next
+
+	}
+	return prev
+}
+
+func arrayToLinkedList(array []int) *ListNode {
+	head := &ListNode{Val: array[0]}
+
+	current := head
+
+	for i := 1; i < len(array); i++ {
+		current.Next = &ListNode{Val: array[i]}
+		current = current.Next
+	}
+	return head
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Print("Error reading input: ", err)
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+
+	var arrNum []int
+	arr := strings.Split(inp, " ")
+
+	for _, val := range arr {
+		num, err := strconv.Atoi(val)
+		if err != nil {
+			fmt.Print("Error parsing input: ", err)
+			return
+		}
+
+		arrNum = append(arrNum, num)
+	}
+
+	head := arrayToLinkedList(arrNum)
+
+	newHead := reverseList(head)
+
+	fmt.Println(newHead.Val)
+}
+
+/////////////////////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+)
+
+// 205, Isomorphic Strings
+
+func isIsomorphic(s string, t string) bool {
+
+	if len(s) != len(t) {
+		return false
+	}
+
+	hashMap1 := make(map[string]string)
+	hashMap2 := make(map[string]string)
+
+	for i := 0; i < len(s); i++ {
+		val1, ok1 := hashMap1[string(s[i])]
+		val2, ok2 := hashMap2[string(t[i])]
+
+		if (ok1 && val1 != string(t[i])) || (ok2 && val2 != string(s[i])) {
+			return false
+		}
+
+		hashMap1[string(s[i])] = string(t[i])
+		hashMap2[string(t[i])] = string(s[i])
+
+	}
+
+	return true
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Print("Error reading input: ", err)
+		return
+	}
+
+	inp2, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Print("Error reading input: ", err)
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+	inp2 = strings.TrimSpace(inp2)
+
+	r := isIsomorphic(inp, inp2)
+
+	fmt.Println(r)
+
+}
+
+////////////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+func removeElements(head *ListNode, val int) *ListNode {
+
+	// Create a dummy node to handle cases where the head needs to be removed
+	dummy := &ListNode{Next: head}
+	current := dummy
+
+	// Traverse the list
+	for current.Next != nil {
+		if current.Next.Val == val {
+			// Remove the node
+			current.Next = current.Next.Next
+		} else {
+			// Move to the next node
+			current = current.Next
+		}
+	}
+
+	// Return the new head, which might be different if the original head was removed
+	return dummy.Next
+
+}
+
+func arrToLinkedList(arr []int) *ListNode {
+	head := &ListNode{Val: arr[0]}
+
+	current := head
+
+	for i := 1; i < len(arr); i++ {
+		current.Next = &ListNode{Val: arr[i]}
+		current = current.Next
+	}
+
+	return head
+
+}
+
+func printLinkedList(head *ListNode) {
+	current := head
+
+	for current != nil {
+		fmt.Print(current.Val, " -> ")
+		current = current.Next
+	}
+
+	fmt.Println("nil")
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Print("Error reading input: ", err)
+		return
+	}
+
+	inp2, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Print("Error reading input: ", err)
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+	inp2 = strings.TrimSpace(inp2)
+
+	arr := strings.Split(inp, " ")
+	var arrNum []int
+
+	val, err := strconv.Atoi(inp2)
+
+	if err != nil {
+		fmt.Print("Error parsing input: ", err)
+		return
+	}
+
+	for _, v := range arr {
+		num, err := strconv.Atoi(v)
+		if err != nil {
+			fmt.Println("Invalid input:", v)
+			return
+		}
+
+		arrNum = append(arrNum, num)
+	}
+
+	head := arrToLinkedList(arrNum)
+
+	printLinkedList(head)
+
+	head = removeElements(head, val)
+
+	printLinkedList(head)
+
+}
+
+////////////////////////////////////////////////////////////////
+
+// 202. Happy Number
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func calcSumOfSquare(num int) int {
+	sum := 0
+	for num > 0 {
+		c := num % 10
+
+		sum += c * c
+
+		num /= 10
+	}
+
+	return sum
+}
+
+func isHappy(n int) bool {
+	hashMap := make(map[int]bool)
+
+	for n != 1 && !hashMap[n] {
+		hashMap[n] = true
+		n = calcSumOfSquare(n)
+	}
+
+	return n == 1
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+
+	num, err := strconv.Atoi(inp)
+
+	if err != nil {
+		fmt.Println("Invalid input. Please enter a positive integer.")
+		return
+	}
+
+	r := isHappy(num)
+
+	fmt.Println(r)
+}
+
+/////////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func hammingWeight(n int) int {
+	count := 0
+	for n != 0 {
+		c := n & 1
+
+		count += c
+
+		n = n >> 1
+	}
+
+	return count
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+
+	num, _ := strconv.Atoi(inp)
+
+	r := hammingWeight(num)
+
+	fmt.Println(r)
+}
+
+///////////////////////////////////////////////////////
+
 import (
 	"bufio"
 	"fmt"
@@ -9,7 +423,6 @@ import (
 )
 
 // 190. Reverse Bits
-
 
 func reverseBits(num uint32) uint32 {
 	var result = uint32(0)
