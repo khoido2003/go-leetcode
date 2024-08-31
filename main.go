@@ -1,5 +1,469 @@
 package main
 
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+// 232. Implement Queue using Stacks
+
+type MyQueue struct {
+	val []int
+}
+
+func Constructor() MyQueue {
+	return MyQueue{}
+}
+
+func (this *MyQueue) Push(x int) {
+	this.val = append(this.val, x)
+}
+
+func (this *MyQueue) Pop() int {
+	front := this.val[0]
+	this.val = this.val[1:]
+
+	return front
+}
+
+func (this *MyQueue) Peek() int {
+	front := this.val[0]
+	return front
+}
+
+func (this *MyQueue) Empty() bool {
+	return len(this.val) == 0
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Print("Error reading input: ", err)
+		return
+	}
+	inp = strings.TrimSpace(inp)
+
+	arr := strings.Split(inp, " ")
+
+	var arrNum []int
+
+	for _, val := range arr {
+		num, err := strconv.Atoi(val)
+		if err != nil {
+			fmt.Print("Error parsing input: ", err)
+			return
+		}
+		arrNum = append(arrNum, num)
+	}
+
+	queue := Constructor()
+
+	queue.Push(1)
+	queue.Push(2)
+	queue.Push(3)
+	queue.Push(4)
+
+	fmt.Println(queue.Peek()) // 1
+	fmt.Println(queue.Pop())  // 1
+}
+
+////////////////////////////////////////////////////
+
+// 231. Power of Two
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func isPowerOfTwo(n int) bool {
+	return n > 0 && (n&(n-1)) == 0
+}
+
+func main() {
+
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Print("Error reading input: ", err)
+		return
+	}
+	inp = strings.TrimSpace(inp)
+
+	num, err := strconv.Atoi(inp)
+
+	if err != nil {
+		fmt.Println("Invalid input. Please enter a valid integer.")
+		return
+	}
+
+	r := isPowerOfTwo(num)
+	fmt.Println(r)
+}
+
+/////////////////////////////////////////////////////
+
+// 226. Invert Binary Tree
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+func invertTree(root *TreeNode) *TreeNode {
+	if root == nil {
+		return nil
+	}
+
+	root.Left, root.Right = invertTree(root.Right), invertTree(root.Left)
+
+	return root
+}
+
+func arrToBTT(array []interface{}) *TreeNode {
+	nodes := make([]*TreeNode, len(array))
+
+	// First, create all nodes
+	for i, val := range array {
+		if val != nil {
+			nodes[i] = &TreeNode{Val: val.(int)}
+		}
+	}
+
+	// Then, assign children
+	for i := 0; i < len(array); i++ {
+		if nodes[i] == nil {
+			continue
+		}
+
+		left := 2*i + 1
+		right := 2*i + 2
+
+		if left < len(nodes) {
+			nodes[i].Left = nodes[left]
+		}
+		if right < len(nodes) {
+			nodes[i].Right = nodes[right]
+		}
+	}
+
+	return nodes[0]
+}
+
+func printTree(root *TreeNode) {
+
+	if root == nil {
+		return
+	}
+
+	printTree(root.Left)
+	fmt.Print(root.Val, " ")
+	printTree(root.Right)
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		panic(err)
+	}
+
+	inp = strings.TrimSpace(inp)
+
+	arr := strings.Split(inp, " ")
+
+	var arrNum []interface{}
+
+	for i := 0; i < len(arr); i++ {
+
+		if arr[i] == "null" {
+			arrNum = append(arrNum, nil)
+			continue
+		}
+		num, err := strconv.Atoi(arr[i])
+
+		if err != nil {
+			fmt.Printf("Error converting")
+			return
+		}
+
+		arrNum = append(arrNum, num)
+
+	}
+
+	fmt.Println(arrNum...)
+
+	head := arrToBTT(arrNum)
+
+	printTree(head)
+
+	r := invertTree(head)
+
+	fmt.Println()
+
+	printTree(r)
+}
+
+////////////////////////////////////////////////
+
+type MyStack struct {
+	array []int
+}
+
+func Constructor() MyStack {
+	return MyStack{
+		array: []int{},
+	}
+}
+
+func (this *MyStack) Push(x int) {
+	this.array = append(this.array, x)
+}
+
+func (this *MyStack) Pop() int {
+	if len(this.array) == 0 {
+		return -1
+	}
+
+	top := this.array[len(this.array)-1]
+
+	this.array = this.array[:len(this.array)-1]
+
+	return top
+
+}
+
+func (this *MyStack) Top() int {
+	if len(this.array) == 0 {
+		return -1
+	}
+
+	return this.array[len(this.array)-1]
+}
+
+func (this *MyStack) Empty() bool {
+	return len(this.array) == 0
+}
+
+/**
+ * Your MyStack object will be instantiated and called as such:
+ * obj := Constructor();
+ * obj.Push(x);
+ * param_2 := obj.Pop();
+ * param_3 := obj.Top();
+ * param_4 := obj.Empty();
+ */
+
+///////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+func countNodes(root *TreeNode) int {
+	return solve(root, 0)
+}
+
+func solve(root *TreeNode, cnt int) int {
+	if root == nil {
+		return cnt
+	}
+
+	cnt++
+	cnt = solve(root.Left, cnt)
+	cnt = solve(root.Right, cnt)
+
+	return cnt
+}
+
+func arrToBBT(arr []interface{}) *TreeNode {
+
+	if len(arr) == 0 || arr[0] == nil {
+		return nil
+	}
+
+	nodes := make([]*TreeNode, len(arr)+1)
+
+	for i := 0; i < len(arr); i++ {
+		if arr[i] != nil {
+
+			node := &TreeNode{
+				Val: arr[i].(int),
+			}
+
+			nodes[i] = node
+		}
+	}
+
+	var j = 0
+
+	for i := 1; i < len(nodes); i++ {
+
+		if nodes[i] == nil {
+			continue
+		}
+
+		left := 2*j + 1
+		right := 2*j + 2
+
+		if left < len(nodes) && nodes[left] != nil {
+			nodes[j].Left = nodes[left]
+		}
+		if right < len(nodes) && nodes[right] != nil {
+			nodes[j].Right = nodes[right]
+		}
+		j++
+	}
+	return nodes[0]
+}
+
+func main() {
+
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+
+	arr := strings.Split(inp, " ")
+
+	var arrNum []interface{}
+
+	for i := 0; i < len(arr); i++ {
+
+		if arr[i] == "null" {
+			arrNum = append(arrNum, nil)
+		}
+
+		num, err := strconv.Atoi(arr[i])
+
+		if err != nil {
+			fmt.Printf("Error parsing number %s: %v\n", arr[i], err)
+			return
+		}
+		arrNum = append(arrNum, num)
+	}
+
+	head := arrToBBT(arrNum)
+	r := countNodes(head)
+
+	fmt.Println("Number of nodes:", r)
+}
+
+/////////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+// 219. Contains Duplicate II
+
+func containsNearbyDuplicate(nums []int, k int) bool {
+	hashMap := make(map[int]int)
+
+	for i := 0; i < len(nums); i++ {
+		if _, ok := hashMap[nums[i]]; ok {
+			if i-hashMap[nums[i]] <= k {
+				return true
+			}
+		}
+		hashMap[nums[i]] = i
+
+	}
+	return false
+}
+
+func main() {
+
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	inp2, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+	inp2 = strings.TrimSpace(inp2)
+
+	arr := strings.Split(inp, " ")
+
+	k, err := strconv.Atoi(inp2)
+
+	if err != nil {
+		fmt.Println("Invalid input:", err)
+		return
+	}
+
+	var arrNum []int
+
+	for i := 0; i < len(arr); i++ {
+		num, err := strconv.Atoi(arr[i])
+
+		if err != nil {
+			fmt.Println("Invalid input:", err)
+			return
+		}
+		arrNum = append(arrNum, num)
+	}
+
+	r := containsNearbyDuplicate(arrNum, k)
+
+	fmt.Println(r)
+
+}
+
+//////////////////////////////////////////////////////////////////
+
 //217. Contains Duplicate
 
 import (
