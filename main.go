@@ -1,5 +1,558 @@
 package main
 
+//////////////////////////////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+// 283. Move Zeroes
+
+func moveZeroes(nums []int) {
+	j := 0
+
+	for i := 0; i < len(nums); i++ {
+		if nums[i] != 0 {
+			nums[j], nums[i] = nums[i], nums[j]
+			j++
+		}
+	}
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+	inp, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+	arr := strings.Split(inp, " ")
+
+	var arrNum []int
+
+	for i := 0; i < len(arr); i++ {
+		num, err := strconv.Atoi(arr[i])
+
+		if err != nil {
+			fmt.Printf("Invalid input at index %d: %s\n", i, arr[i])
+			return
+		}
+		arrNum = append(arrNum, num)
+	}
+
+	moveZeroes(arrNum)
+
+	for i := 0; i < len(arr); i++ {
+		print(arrNum[i])
+	}
+}
+
+////////////////////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
+
+// 278. First Bad Version
+
+func firstBadVersion(n int) int {
+	left, right := 1, n
+
+	for left < right {
+		mid := left + (right-left)/2
+
+		if isBadVersion(mid) {
+			right = mid
+		} else {
+			left = mid + 1
+		}
+	}
+
+	return left
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+}
+
+/////////////////////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+// 268. Missing Number
+
+func QuickSort(arr []int) []int {
+	if len(arr) < 2 {
+		return arr
+	}
+
+	// Choose a pivot
+	pivot := arr[len(arr)/2]
+
+	// Partitioning the array into three parts
+	low := []int{}
+	equal := []int{}
+	high := []int{}
+
+	for _, num := range arr {
+		if num < pivot {
+			low = append(low, num)
+		} else if num > pivot {
+			high = append(high, num)
+		} else {
+			equal = append(equal, num)
+		}
+	}
+
+	// Recursively sort the lower and higher partitions
+	QuickSort(low)
+	QuickSort(high)
+
+	// Rebuild the array in place: first low, then equal, then high
+	arr = append(arr[:0], append(append(low, equal...), high...)...)
+
+	return arr
+}
+
+func missingNumber(nums []int) int {
+	// Sort the array
+	nums = QuickSort(nums)
+
+	// Check for missing number by comparing the index and value
+	for i := 0; i < len(nums); i++ {
+		if nums[i] != i {
+			return i
+		}
+	}
+
+	// If no number is missing within the range, return the next number
+	return len(nums)
+}
+
+func main() {
+
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Print("Error reading input: ", err)
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+
+	nums := strings.Split(inp, " ")
+
+	var arrNum []int
+
+	for _, i := range nums {
+
+		num, err := strconv.Atoi(i)
+
+		if err != nil {
+			fmt.Println("Error parsing input:", err)
+			return
+		}
+		arrNum = append(arrNum, num)
+	}
+
+	fmt.Println(missingNumber(arrNum))
+
+}
+
+//////////////////////////////////////////////////
+
+// 263, Ugly number
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func isUgly(n int) bool {
+	for n > 0 {
+		if n%2 == 0 {
+			n = n / 2
+		} else if n%3 == 0 {
+			n = n / 3
+		} else if n%5 == 0 {
+			n = n / 5
+		} else {
+			break
+		}
+	}
+
+	return n == 1
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Print("Error reading input: ", err)
+		return
+	}
+	inp = strings.TrimSpace(inp)
+	num, err := strconv.Atoi(strings.TrimSpace(inp))
+
+	if err != nil {
+		fmt.Print("Error parsing input: ", err)
+		return
+	}
+
+	r := isUgly(num)
+	fmt.Println(r)
+}
+
+//////////////////////////////////////////////////
+
+// 258. Add Digits
+
+func addDigits(num int) int {
+	if num == 0 {
+		return 0
+	} else if num%9 == 0 {
+		return 9
+	} else {
+		return num % 9
+	}
+}
+
+func main() {
+
+}
+
+//////////////////////////////////////////////////////////////////
+
+// 257. Binary Tree Paths
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
+}
+
+func binaryTreePaths(root *TreeNode) []string {
+	var arrResult []string
+
+	solve(root, &arrResult, "")
+
+	return arrResult
+
+}
+
+func solve(node *TreeNode, path *[]string, r string) {
+	if node.Left == nil && node.Right == nil {
+		r += fmt.Sprintf("%d", node.Val)
+		*path = append(*path, r)
+		return
+	}
+
+	r += fmt.Sprintf("%d->", node.Val)
+
+	if node.Left != nil {
+		solve(node.Left, path, r)
+	}
+	if node.Right != nil {
+		solve(node.Right, path, r)
+	}
+
+}
+
+func arrToBBT(arr []interface{}) *TreeNode {
+	nodes := make([]*TreeNode, len(arr))
+	for i, val := range arr {
+
+		if val == nil {
+			nodes[i] = nil
+			continue
+		}
+		nodes[i] = &TreeNode{Val: val.(int)}
+	}
+
+	for i := 0; i < len(nodes); i++ {
+
+		if nodes[i] == nil {
+			continue
+		}
+
+		left := 2*i + 1
+		right := 2*i + 2
+
+		if left < len(nodes) && nodes[left] != nil {
+			nodes[i].Left = nodes[left]
+		}
+
+		if right < len(nodes) && nodes[right] != nil {
+			nodes[i].Right = nodes[right]
+		}
+	}
+
+	return nodes[0]
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Print("Error reading input: ", err)
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+
+	arr := strings.Split(inp, " ")
+
+	var arrNum []interface{}
+
+	for _, str := range arr {
+
+		if str == "null" {
+			arrNum = append(arrNum, nil)
+			continue
+		}
+
+		num, err := strconv.Atoi(str)
+		if err != nil {
+			fmt.Printf("Error parsing number '%s': %v\n", str, err)
+			continue
+		}
+		arrNum = append(arrNum, num)
+	}
+
+	root := arrToBBT(arrNum)
+	paths := binaryTreePaths(root)
+	fmt.Println(paths)
+
+}
+
+////////////////////////////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+)
+
+// 242. Valid Anagram
+
+func isAnagram(s string, t string) bool {
+	if len(s) != len(t) {
+		return false
+	}
+
+	hashMap := make(map[string]int)
+	hashMap2 := make(map[string]int)
+
+	for _, c := range s {
+		_, ok := hashMap[string(c)]
+		if ok {
+			hashMap[string(c)]++
+		} else {
+			hashMap[string(c)] = 1
+		}
+	}
+
+	for _, c := range t {
+		_, ok := hashMap2[string(c)]
+		if ok {
+			hashMap2[string(c)]++
+		} else {
+			hashMap2[string(c)] = 1
+		}
+	}
+
+	for k, v := range hashMap {
+		if v != hashMap2[k] {
+			return false
+		}
+	}
+
+	return true
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Print("Error reading input: ", err)
+		return
+	}
+
+	inp2, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Print("Error reading input: ", err)
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+	inp2 = strings.TrimSpace(inp2)
+
+	r := isAnagram(inp, inp2)
+
+	fmt.Println(r)
+
+}
+
+//////////////////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+// 234. Palindrome Linked List
+
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+// Clone a linked list
+func cloneList(head *ListNode) *ListNode {
+	if head == nil {
+		return nil
+	}
+
+	newHead := &ListNode{Val: head.Val}
+	currentOriginal := head.Next
+	currentClone := newHead
+
+	for currentOriginal != nil {
+		currentClone.Next = &ListNode{Val: currentOriginal.Val}
+		currentClone = currentClone.Next
+		currentOriginal = currentOriginal.Next
+	}
+
+	return newHead
+}
+
+// Reverse a linked list
+func reverseList(head *ListNode) *ListNode {
+	var prev *ListNode
+	current := head
+
+	for current != nil {
+		next := current.Next
+		current.Next = prev
+		prev = current
+		current = next
+	}
+
+	return prev
+}
+
+// Check if a linked list is a palindrome
+func isPalindrome(head *ListNode) bool {
+	if head == nil || head.Next == nil {
+		return true
+	}
+
+	// Clone the original list
+	clonedHead := cloneList(head)
+
+	// Reverse the original list
+	reversedHead := reverseList(head)
+
+	// Compare the cloned original list with the reversed list
+	for clonedHead != nil && reversedHead != nil {
+		if clonedHead.Val != reversedHead.Val {
+			return false
+		}
+		clonedHead = clonedHead.Next
+		reversedHead = reversedHead.Next
+	}
+
+	return true
+}
+
+// Convert an array to a linked list
+func arrToLinkedList(arr []int) *ListNode {
+	if len(arr) == 0 {
+		return nil
+	}
+
+	head := &ListNode{Val: arr[0]}
+	current := head
+	for i := 1; i < len(arr); i++ {
+		current.Next = &ListNode{Val: arr[i]}
+		current = current.Next
+	}
+
+	return head
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+	inp, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+	arr := strings.Split(inp, " ")
+
+	var arrNum []int
+	for _, val := range arr {
+		num, err := strconv.Atoi(val)
+		if err != nil {
+			fmt.Println("Error parsing input:", err)
+			return
+		}
+		arrNum = append(arrNum, num)
+	}
+
+	head := arrToLinkedList(arrNum)
+	isPal := isPalindrome(head)
+	fmt.Println(isPal)
+}
+
+/////////////////////////////////////////////////////////////
+
 import (
 	"bufio"
 	"fmt"
