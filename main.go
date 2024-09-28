@@ -1,5 +1,487 @@
 package main
 
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+// Function to find the intersection of two arrays using a map
+func intersect(nums1 []int, nums2 []int) []int {
+	// Create a map to store the frequency of each number in nums1
+	frequencyMap := make(map[int]int)
+	for _, num := range nums1 {
+		frequencyMap[num]++
+	}
+
+	// Find the intersection based on the map
+	var result []int
+	for _, num := range nums2 {
+		if count, exists := frequencyMap[num]; exists && count > 0 {
+			result = append(result, num)
+			frequencyMap[num]-- // Decrease the count
+		}
+	}
+
+	return result
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	// Read the first input line (nums1)
+	inp, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("Error")
+		return
+	}
+
+	// Read the second input line (nums2)
+	inp2, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("Error")
+		return
+	}
+
+	// Process input strings
+	inp = strings.TrimSpace(inp)
+	inp2 = strings.TrimSpace(inp2)
+
+	// Convert input strings to arrays of integers
+	arr1 := strings.Split(inp, " ")
+	arr2 := strings.Split(inp2, " ")
+
+	var arr1Num []int
+	var arr2Num []int
+
+	for _, v := range arr1 {
+		num, err := strconv.Atoi(v)
+		if err != nil {
+			fmt.Println("Error converting string to integer:", err)
+			return
+		}
+		arr1Num = append(arr1Num, num)
+	}
+
+	for _, v := range arr2 {
+		num, err := strconv.Atoi(v)
+		if err != nil {
+			fmt.Println("Error converting string to integer:", err)
+			return
+		}
+		arr2Num = append(arr2Num, num)
+	}
+
+	// Find and print the intersection
+	result := intersect(arr1Num, arr2Num)
+	fmt.Println(result)
+}
+
+/////////////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func intersection(nums1 []int, nums2 []int) []int {
+
+	for _, num := range nums1 {
+		set1[num] = true
+	}
+
+	for _, num := range nums2 {
+		if set1[num] {
+			set2[num] = true
+		}
+	}
+
+	result := []int{}
+	for num := range set2 {
+		result = append(result, num)
+	}
+
+	return result
+}
+
+func main() {
+
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error")
+		return
+	}
+
+	inp2, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error")
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+	inp2 = strings.TrimSpace(inp2)
+
+	var arrNum1 []int
+	var arrNum2 []int
+
+	for _, num := range strings.Split(inp, " ") {
+		intNum, _ := strconv.Atoi(num)
+		arrNum1 = append(arrNum1, intNum)
+	}
+
+	for _, num := range strings.Split(inp2, " ") {
+		intNum, _ := strconv.Atoi(num)
+		arrNum2 = append(arrNum2, intNum)
+	}
+
+}
+
+/////////////////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+)
+
+// 345. Reverse Vowels of a String
+
+func reverseVowels(s string) string {
+
+	hashMap := map[string]int{
+		"a": 1,
+		"e": 1,
+		"i": 1,
+		"o": 1,
+		"u": 1,
+		"A": 1,
+		"E": 1,
+		"I": 1,
+		"O": 1,
+		"U": 1,
+	}
+
+	i, j := 0, len(s)-1
+	runeSlice := []rune(s)
+
+	for i < j {
+		if _, ok := hashMap[string(runeSlice[i])]; !ok {
+			i++
+			continue
+		}
+		if _, ok := hashMap[string(runeSlice[j])]; !ok {
+			j--
+			continue
+		}
+
+		runeSlice[i], runeSlice[j] = runeSlice[j], runeSlice[i]
+		i++
+		j--
+
+	}
+
+	return string(runeSlice)
+
+}
+
+func main() {
+
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+
+	r := reverseVowels(inp)
+
+	fmt.Println(r)
+}
+
+///////////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+)
+
+func reverseString(s []byte) {
+	i, j := 0, len(s)-1
+
+	for i < j {
+		s[i], s[j] = s[j], s[i]
+		i++
+		j--
+	}
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+	var arr []byte
+
+	for _, char := range inp {
+		arr = append(arr, byte(char))
+	}
+
+	reverseString(arr)
+
+	fmt.Println(string(arr))
+}
+
+/////////////////////////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+// 342. Power of Four
+
+func createMask() uint32 {
+	mask := uint32(0)
+	for i := 1; i < 32; i += 2 {
+		mask |= (1 << i)
+	}
+	return mask
+}
+
+func countBits(num int) int {
+	if num == 0 {
+		return 0
+	}
+
+	cnt := 0
+
+	for num > 0 {
+		if num&1 == 1 {
+			cnt++
+		}
+		num >>= 1
+	}
+
+	return cnt
+}
+
+func isPowerOfFour(n int) bool {
+	return n > 0 && (n&(n-1)) == 0 && (n&0xAAAAAAAA) == 0
+
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Read error")
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+	num, err := strconv.Atoi(inp)
+	if err != nil {
+		fmt.Println("Invalid input")
+		return
+	}
+
+	fmt.Println(isPowerOfFour(num))
+}
+
+/////////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func countBits(n int) []int {
+
+	if n == 0 {
+		return []int{0}
+	}
+
+	var ans []int
+	ans = append(ans, 0)
+	ans = append(ans, 1)
+
+	for i := 2; i <= n; i++ {
+		curValue := ans[i>>1] + (i & 1)
+		ans = append(ans, curValue)
+	}
+	return ans
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Read error")
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+	num, err := strconv.Atoi(inp)
+
+	if err != nil {
+		fmt.Println("Invalid input")
+		return
+	}
+
+	r := countBits(num)
+	fmt.Println(r)
+}
+
+///////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
+// 326. Power of Three
+
+func isPowerOfThree(n int) bool {
+	if n == 1 {
+		return true
+	}
+
+	if n <= 0 {
+		return false
+	}
+
+	if n%3 != 0 {
+		return false
+	}
+
+	return isPowerOfThree(n / 3)
+
+}
+
+	inp, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("Error reading input: ", err)
+	}
+	inp = strings.TrimSpace(inp)
+
+	num, err := strconv.Atoi(inp)
+
+	if err != nil {
+		fmt.Print("Error converting input to integer: ", err)
+	}
+
+	r := isPowerOfThree(num)
+
+	fmt.Println(r)
+}
+
+////////////////////////////////////////
+
+// Nim game
+
+func canWinNim(n int) bool {
+	return n%4 != 0
+}
+
+func main() {
+
+}
+
+/////////////////////////////////////
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+)
+
+//290. Word Pattern
+
+func wordPattern(pattern string, s string) bool {
+	arr := strings.Split(s, " ")
+	if len(pattern) != len(arr) {
+		return false
+	}
+	hashMap1 := make(map[string]int)
+	hashMap2 := make(map[string]int)
+
+	i, j := 1, 1
+	for _, v := range pattern {
+		if _, ok := hashMap1[string(v)]; !ok {
+			hashMap1[string(v)] = i
+			i++
+		}
+	}
+
+	for _, v := range arr {
+		if _, ok := hashMap2[string(v)]; !ok {
+			hashMap2[string(v)] = j
+
+
+	for i, v := range pattern {
+		if hashMap1[string(v)] != hashMap2[arr[i]] {
+			return false
+		}
+	}
+	return true
+}
+
+func main() {
+	reader := bufio.NewReader(os.Stdin)
+	inp, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error")
+		return
+	}
+
+	inp2, err := reader.ReadString('\n')
+
+	if err != nil {
+		fmt.Println("Error")
+		return
+	}
+
+	inp = strings.TrimSpace(inp)
+	inp2 = strings.TrimSpace(inp2)
+
+	fmt.Println(wordPattern(inp, inp2))
+
+}
+
 //////////////////////////////////////////////////////////////
 
 import (
@@ -4669,6 +5151,12 @@ func twoSum(numArr []int, target int) []int {
 	return nil
 
 }
+
+func solve(input string, target string) {
+
+func solve(input string, target string) {
+
+func solve(input string, target string) {
 
 func solve(input string, target string) {
 
